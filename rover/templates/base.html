@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Externally sourced Eel, Bootstrap-4, jQuery-3.3, AJAX-1.1, Fonts-Awesome-4.7 -->
+    <link rel="stylesheet" href="../static/css/w3.css">
+    <script src="https://kit.fontawesome.com/459ff02c05.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Google Icons and Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <!-- Chart.js and Moment Support -->
+    <script src="../static/js/holder.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../static/js/jquery-slim.min.js"><\/script>')</script>
+    <script>Holder.addTheme("thumb", {bg:"#55595c", fg:"#eceeef", text:"Thumbnail"});</script>
+    <style type="text/css">
+      /* Chart.js */
+      @-webkit-keyframes chartjs-render-animation {
+        from {opacity: 0.99}
+        to {opacity: 1}
+      }
+      @keyframes chartjs-render-animation {
+        from {opacity: 0.99}
+        to {opacity: 1}
+      }
+      .chartjs-render-monitor {-webkit-animation: chartjs-render-animation 0.001s; animation: chartjs-render-animation 0.001s;}
+    </style>
+
+    <!-- Jumbotron & Card options -->
+    <style>
+      .JumbotronFormImg {
+        background-image: url("../static/img/bg/penguin.jpg"); height: 100vh !important; background-size: cover !important; width: 100% !important;}
+      .JumbotronFormImg1 {
+        background-image: url("../static/img/bg/pablo.jpg"); background-size: cover !important;}
+      .CardBodyImg {
+        background-image: url("../static/img/bg/penguin.jpg"); background-size: cover !important;}
+      .CardBodyImg1 {
+        background-image: url("../static/img/bg/pablo.jpg"); background-size: cover !important;}
+    </style>
+
+    <!-- Home Page Navbar Settings -->
+    <style>
+      body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif;}
+      body, html {height: 100%; color: #777; line-height: 1.5;}
+      /* Create a Parallax Effect */
+      .bgimg-1 {background-attachment: fixed; background-position: center; background-repeat: no-repeat; background-size: cover;}
+      /* First image (Logo. Full height) */
+      .bgimg-1 {background-image: url("../static/img/bg/pablo.jpg"); min-height:100%;}
+      .w3-wide {letter-spacing: 3px; word-spacing:7px;}
+      .w3-hover-opacity {cursor: pointer;}
+      /* Turn off parallax scrolling for tablets and phones */
+      @media only screen and (max-device-width: 1600px) {.bgimg-1 {background-attachment: scroll; min-height:600px;} }
+    </style>
+
+  </head>
+
+
+  <!-- Landing Page Content -->
+  <body>
+
+    <div>
+      {% block content %}
+
+      {% endblock %}
+    </div>
+
+  </body>
+</html>

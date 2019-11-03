@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="../static/css/dashboard.css">
+<style type="text/css"> body{ background: url("../static/img/bg/pablo.jpg") !important; background-size: cover !important; background-repeat: repeat !important; background-position: center !important;}</style>
+<style>
+  th {background-color: #008080; color: white; text-align: center; padding: 8px; font-family: Roboto;}
+  tr:nth-child(even){background-color: #E8875C;}
+</style>
+
+
+<!-- Dashboard Page Content -->
+<div class="w3-container w3-padding-large" style="border:16px;">
+
+  <div class="w3-panel" style="color:#003662;">
+    <h2 class="w3-opacity">Text Opacity</h2>
+  </div>
+
+  <div class="w3-row w3-column-padding">
+    <div class="w3-col m2 w3-center" style="padding-right:5px; background-color:#003662;"><p>Navigation</p></div>
+    <div class="w3-col m10 w3-center" style="background-color:#003662;"><p>Control</p></div>
+  </div>
+
+  <div class="w3-row w3-column-padding">
+    <div class="w3-col m2 w3-center" style="height:500px; background-color:#003662;"><p>Navigation</p></div>
+    <!-- Displayed Data Table -->
+    <div class="w3-col m10 w3-center">
+      <div class="w3-responsive w3-small" style="text-align: center; height:500px;">
+        {{ data.to_html(classes="table table-striped", na_rep="NULL") | safe}}
+      </div><br>
+    </div>
+  </div>
+
+</div>
+
+
+{% endblock %}
