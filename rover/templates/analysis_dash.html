@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="../static/css/dashboard.css">
+<script src="https://cdn.jsdelivr.net/gh/RubaXa/Sortable/Sortable.min.js"></script>
+<style type="text/css"> body{ background: url("../static/img/bg/pablo.jpg") !important; background-size: cover !important; background-repeat: repeat !important; background-position: center !important;}</style>
+<style>
+  /* - - - - - - - -------- Table Style - - - - - - - - - - - - - -*/
+  table a:link {color: #666; font-weight: bold; text-decoration:none;}
+  table a:visited {color: #999999; font-weight:bold; text-decoration:none;}
+  table a:active,
+  table a:hover {color: #bd5a35; text-decoration:underline;}
+  table {font-family:Arial, Helvetica, sans-serif; color:#666; font-size:12px; background:#EAEBEC; border:#ccc 1px solid; border-radius:3px; border-collapse:collapse; border-spacing: 0; box-shadow: 0 1px 2px #D1D1D1;}
+  table th {padding:5px 5px 5px 5px; border-top:0; border-bottom:1px solid #e0e0e0; border-left: 1px solid #E0E0E0; background: #003662; color:#FFF;}
+  table th:first-child {text-align: center;}
+  table tr:first-child th:first-child {border-top-left-radius:3px; border-left: 0;}
+  table tr:first-child th:last-child {border-top-right-radius:3px;}
+  table tr {text-align: center;}
+  table td:first-child {text-align: center; border-left: 0;}
+  table td {padding:10px; border-bottom:1px solid #e0e0e0; border-left: 1px solid #e0e0e0; background: #FAFAFA;}
+  table tr:last-child td {border-bottom:0;}
+  table tr:last-child td:first-child {border-bottom-left-radius:3px;}
+  table tr:last-child td:last-child {border-bottom-right-radius:3px;}
+  table tr:hover td {background: #F2F2F2;}
+  table th, table td {width: 345px; text-align: center;}
+  #wrapper {width: 740px; height: 300px; overflow-x: scroll; overflow-y: scroll;}
+  table thead {position:fixed; text-transform: uppercase;}
+</style>
+
+
+<!-- Dashboard Main Page Content -->
+<div class="w3-container w3-padding-large" style="border:16px;">
+
+  <!-- Top Row [1] Dashboard Options -->
+  <div class="w3-row">
+    <!-- Top Right Options ['Restructure'] -->
+    <button onclick="document.getElementById('restructure').style.display='block'" class="w3-button w3-xxlarge w3-hover-none" title="Restructure" style="color:#003662; float:right; padding-left:20px; text-decoration:none;"><i class="fas fa-th-list"></i></button>
+    <div id="restructure" class="w3-modal">
+      <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-height:700px; max-width:900px">
+
+        <!-- 'Restructure' Top Right Options -->
+        <div class="w3-center form-group-row" style="padding-bottom:50px;"><br>
+          <h2 class="w3-margin-top w3-margin-left w3-display-topleft">Fields</h2>
+          <button class="btn w3-margin-top w3-margin-right w3-display-topright" id="btnapply" title="Apply Changes" style="background-color:#003662; color:#FFF;"> APPLY</button>
+        </div>
+        <div class="w3-container">
+          <div class="w3-row" style="padding-bottom:15px;">
+
+            <!-- Full list of all DataFrame columns -->
+            <div class="w3-col m4 l3">
+              <p>Drag & drop fields to restructure</p>
+              <div class="card" style="width:15rem; max-height:500px; overflow-x:scroll; overflow-y:scroll;">
+                <div class="card-header"><b> All Fields</b></div>
+                <ul class="list-group list-group-flush" id="allCols">
+                  {% for col in data.columns %}
+                  <li class="list-group-item">{{ col }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+
+            <!-- Dropping windows for restructuring -->
+            <div class="w3-col m8 l9" style="padding-top:15px; padding-left:20px;">
+              <!-- 'Restructure' 1st Row -->
+              <div class="row">
+                <!-- Report Filters Window -->
+                <div class="col-sm-6">
+                  <div class="card form-group" style="width:20rem; height:200px; overflow-x:scroll; overflow-y:scroll;">
+                    <h5 class="card-header"> Report Filters</h5>
+                    <ul class="list-group" id="report_filters"></ul>
+                  </div>
+                </div>
+                <!-- Columns Window -->
+                <div class="col-sm-6">
+                  <div class="card form-group" style="width:20rem; height:200px; overflow-x:scroll; overflow-y:scroll;">
+                    <h5 class="card-header"> Columns</h5>
+                    <ul class="list-group" id="report_cols"></ul>
+                  </div>
+                </div>
+              </div>
+              <!-- 'Restructure' 2nd row -->
+              <div class="row" style="padding-top:10px; padding-bottom:15px;">
+                <!-- Rows Window -->
+                <div class="col-sm-6">
+                  <div class="card form-group" style="width:20rem; height:200px; overflow-x:scroll; overflow-y:scroll;">
+                    <h5 class="card-header"> Rows</h5>
+                    <ul class="list-group" id="report_rows"></ul>
+                  </div>
+                </div>
+                <!-- Values Window -->
+                <div class="col-sm-6">
+                  <div class="card form-group" style="width:20rem; height:200px; overflow-x:scroll; overflow-y:scroll;">
+                    <h5 class="card-header"> Values</h5>
+                    <ul class="list-group" id="report_values"></ul>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End of 'Restructure' modal -->
+    </div>
+  </div>
+  <!-- END of Top Row [1] Dashboard Options -->
+
+  <!-- Second Row [2] Dashboard Navigation Pane -->
+  <div class="w3-row w3-column-padding">
+    <div class="w3-col m2 w3-center w3-grey"><p>First Tab</p></div>
+    <div class="w3-col m2 w3-center w3-grey"><p>Second Tab</p></div>
+    <div class="w3-col m2 w3-center w3-grey"><p>Third Tab</p></div>
+    <div class="w3-col m2 w3-center w3-grey"><p>Fourth Tab</p></div>
+    <div class="w3-col m2 w3-center w3-grey"><p>Fifth Tab</p></div>
+    <div class="w3-col m2 w3-center w3-grey"><p>Sixth Tab</p></div>
+  </div>
+  <!-- END of Second Row [2] Dashboard Navigation Pane -->
+  <!-- Last Row [3] Dashboard Navigation Pane -->
+  <div class="w3-row w3-column-padding">
+    <!-- Last Row Drag n Drop Pane -->
+    <div class="w3-col m2 w3-center w3-grey" style="height:775px; padding-top:10px;">
+      <p>Random Content for now!</p>
+    </div>
+    <!-- END of Last Row Drag n Drop Pane -->
+
+    <!-- Data Table Container -->
+    <div class="w3-col-padding m10 w3-center">
+      <div class="w3-responsive w3-medium" style="height:775px;">
+        {{ data.to_html(classes="table table-striped", na_rep="NULL", index=False) | safe}}
+      </div><br>
+    </div>
+  </div>
+
+  <!-- Last Row [3] Dashboard Navigation Pane -->
+  <!-- END of Dashboard Primary Container -->
+</div>
+
+
+<!-- Add-on Scripts -->
+<script>
+  // Fetch 'Restructure' modal & close when User clicks outside
+  var modal = document.getElementById('restructure');
+  window.onclick = function(event) {
+    if (event.target == modal) {
+    modal.style.display = "none";}
+  }
+
+  // Make 'Restructure' list items draggable
+  Sortable.create(allCols, {
+    animation: 100,
+    group: 'list-1',
+    draggable: '.list-group-item',
+    handle: '.list-group-item',
+    sort: true,
+    filter: '.sortable-disabled',
+    chosenClass: 'active'
+  });
+
+  Sortable.create(report_filters, {
+    group: 'list-1',
+    handle: '.list-group-item'
+  });
+
+  Sortable.create(report_cols, {
+    group: 'list-1',
+    handle: '.list-group-item'
+  });
+
+  Sortable.create(report_rows, {
+    group: 'list-1',
+    handle: '.list-group-item'
+  });
+
+  Sortable.create(report_values, {
+    group: 'list-1',
+    handle: '.list-group-item'
+  });
+
+  // Array of 'Restructure' Report Filters
+  var filter_list = document.getElementById("report_filters").getElementsByTagName("li");
+  var filter_data = [];
+  for(var i=0; i<filter_list.length; i++){
+    filter_data.push(filter_list[i].innerText);
+  }
+
+  // Array of 'Restructure' Report Columns
+  var col_list = document.getElementById("report_cols").getElementsByTagName("li");
+  var col_data = [];
+  for(var i=0; i<col_list.length; i++){
+    col_data.push(col_list[i].innerText);
+  }
+
+  // Array of 'Restructure' Report Rows
+  var row_list = document.getElementById("report_rows").getElementsByTagName("li");
+  var row_data = [];
+  for(var i=0; i<row_list.length; i++){
+    row_data.push(row_list[i].innerText);
+  }
+
+  // Array of 'Restructure' Report Values
+  var val_list = document.getElementById("report_values").getElementsByTagName("li");
+  var val_data = [];
+  for(var i=0; i<val_list.length; i++){
+    val_data.push(val_list[i].innerText);
+  }
+
+  //AJAX call to push dragged column-wise-data to Flask Server on clicking 'Apply'
+  $('#btnapply').on('click', function (e){
+    $.ajax({
+        url: "/analysis_dash",
+        type: "POST",
+        data: JSON.stringify({filterArray:filter_data, colArray:col_data, rowArray:row_data, valArray:val_data}),
+        contentType: "application/json; charset=utf-8",
+        success: function(dat) { console.log('success', dat);
+      }
+    });
+    e.preventDefault();
+  });
+</script>
+
+
+{% endblock %}
