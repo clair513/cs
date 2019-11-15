@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% block content %}
+<script type="text/javascript" src="../static/js/Sortable.min.js"></script>
+<style type="text/css"> body{ background: url("../static/img/bg/pablo.jpg") !important; background-size: cover !important; background-repeat: repeat !important; background-position: center !important;}</style>
+<style>
+  /* - - - - - - - - - - - Data Table Style - - - - - - - - - - - - - -*/
+  table {text-align: left; position: relative; border-collapse: collapse;}
+  th, td {padding: 0.25rem; text-align: center;}
+  td {font-family: Roboto; background-color:#E8E9EC;}
+  th {font-family: Montserrat; background: #003662; color:white; position: sticky; top: 0; box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);}
+</style>
+
+
+<!-- Dashboard Main Page Content -->
+<div class="w3-container w3-padding-large"  id="dash_page" style="border:16px;">
+
+  <!-- Top Row [1] Dashboard Options -->
+  <div class="w3-row">
+    <!-- Top Right Options ['Restructure', 'Reload Dataset', 'Sort Table'] -->
+    <button onclick="document.getElementById('restructure').style.display='block'" class="w3-button w3-xxlarge w3-hover-none" title="Restructure" style="color:#003662; float:right; padding-left:20px; text-decoration:none; outline:none !important;"><i class="fas fa-th-list"></i></button>
+    <a href="{{url_for("analysis_dash")}}" class="w3-button w3-xxlarge w3-hover-none" title="Reload Dataset" style="color: #003662; float:left; padding-left:20px; text-decoration:none; outline:none !important;"><i class="fas fa-redo-alt"></i></a>
+    <button onclick="sortTable()" class="w3-button w3-xxlarge w3-hover-none" title="Sort Table" style="color:#003662; float:right; padding-left:20px; text-decoration:none; outline:none !important;"><i class="fas fa-sort-alpha-down"></i></button>
+    <div id="restructure" class="w3-modal">
+      <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-height:700px; max-width:900px">
+
+        <!-- 'Restructure' Top Right Options -->
+        <div class="w3-center form-group-row" style="padding-bottom:50px;"><br>
+          <h2 class="w3-margin-top w3-margin-left w3-display-topleft">Fields</h2>
+          <button class="btn w3-margin-top w3-margin-right w3-display-topright" id="btnapply" title="Apply Changes" style="background-color:#003662; color:#FFF;"> APPLY</button>
+        </div>
+        <div class="w3-container">
+          <div class="w3-row" style="padding-bottom:15px;">
+
+            <!-- Full list of all DataFrame columns -->
+            <div class="w3-col m4 l3">
+              <p>Drag & drop fields to restructure</p>
+              <div class="card" style="width:15rem; max-height:450px; overflow-x:scroll; overflow-y:scroll;">
+                <div class="card-header"><b> All Fields</b></div>
+                <ul class="list-group list-group-flush" id="allCols">
+                  {% for col in col_list %}
+                  <li class="list-group-item">{{ col }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+
+            <!-- Dropping windows for restructuring -->
+            <div class="w3-col m8 l9" style="padding-top:15px; padding-left:20px;">
+              <!-- 'Restructure' 1st Row -->
+              <div class="row">
+                <!-- Report Filters Window -->
+                <div class="col-sm-6">
+                  <div class="card form-group" style="width:20rem; height:200px; overflow-x:scroll; overflow-y:scroll;">
+                    <h5 class="card-header"> Report Filters</h5>
+                    <ul class="list-group" id="report_filters"></ul>
+                  </div>
+                </div>
+                <!-- Columns Window -->
+                <div class="col-sm-6">
+                  <div class="card form-group" style="width:20rem; height:200px; overflow-x:scroll; overflow-y:scroll;">
+                    <h5 class="card-header"> Columns</h5>
+                    <ul class="list-group" id="report_cols"></ul>
+                  </div>
+                </div>
+              </div>
+              <!-- 'Restructure' 2nd row -->
+              <div class="row" style="padding-top:10px; padding-bottom:15px;">
+                <!-- Rows Window -->
+                <div class="col-sm-6">
+                  <div class="card form-group" style="width:20rem; height:200px; overflow-x:scroll; overflow-y:scroll;">
+                    <h5 class="card-header"> Rows</h5>
+                    <ul class="list-group" id="report_rows"></ul>
+                  </div>
+                </div>
+                <!-- Values Window -->
+                <div class="col-sm-6">
+                  <div class="card form-group" style="width:20rem; height:200px; overflow-x:scroll; overflow-y:scroll;">
+                    <h5 class="card-header"> Values</h5>
+                    <ul class="list-group" id="report_values"></ul>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End of 'Restructure' modal -->
+    </div>
+  </div>
+  <!-- END of Top Row [1] Dashboard Options -->
+
+
+  <!-- Last Row [2] Dashboard Display Pane -->
+  <div class="w3-row w3-column-padding">
+    <!-- Data Table Container -->
+    <div class="w3-col-padding w3-center">
+      <div class="w3-responsive" style="text-align:center; max-height:780px; overflow-y:auto;">
+        {{ data | safe }}
+      </div><br>
+    </div>
+  </div>
+
+  <!-- END of Dashboard Primary Container -->
+</div>
+
+
+<!-- Add-on Scripts -->
+<script>
+  // Fetch 'Restructure' modal & close when User clicks outside
+  var modal = document.getElementById('restructure');
+  window.onclick = function(event) {
+    if (event.target == modal) {
+    modal.style.display = "none";}
+  }
+
+  // Make 'Restructure' list items draggable
+  Sortable.create(allCols, {
+    animation: 100,
+    group: 'list-1',
+    draggable: '.list-group-item',
+    handle: '.list-group-item',
+    sort: true,
+    filter: '.sortable-disabled',
+    chosenClass: 'active'
+  });
+
+  Sortable.create(report_filters, {
+    group: 'list-1',
+    handle: '.list-group-item'
+  });
+
+  Sortable.create(report_cols, {
+    group: 'list-1',
+    handle: '.list-group-item'
+  });
+
+  Sortable.create(report_rows, {
+    group: 'list-1',
+    handle: '.list-group-item'
+  });
+
+  Sortable.create(report_values, {
+    group: 'list-1',
+    handle: '.list-group-item'
+  });
+
+  //AJAX call to push dragged column-wise-data to Flask Server on clicking 'Apply'
+  $('#btnapply').on('click', function (e){
+
+    // Array of 'Restructure' Report Filters
+    var filter_list = document.getElementById("report_filters").getElementsByTagName("li");
+    var filter_data = [];
+    for(var i=0; i<filter_list.length; i++){
+      filter_data.push(filter_list[i].innerText);
+    }
+
+    // Array of 'Restructure' Report Columns
+    var col_list = document.getElementById("report_cols").getElementsByTagName("li");
+    var col_data = [];
+    for(var i=0; i<col_list.length; i++){
+      col_data.push(col_list[i].innerText);
+    }
+
+    // Array of 'Restructure' Report Rows
+    var row_list = document.getElementById("report_rows").getElementsByTagName("li");
+    var row_data = [];
+    for(var i=0; i<row_list.length; i++){
+      row_data.push(row_list[i].innerText);
+    }
+
+    // Array of 'Restructure' Report Values
+    var val_list = document.getElementById("report_values").getElementsByTagName("li");
+    var val_data = [];
+    for(var i=0; i<val_list.length; i++){
+      val_data.push(val_list[i].innerText);
+    }
+
+    $.ajax({
+      url: "/analysis_dash",
+      type: "POST",
+      data: JSON.stringify({filterArray:filter_data, colArray:col_data, rowArray:row_data, valArray:val_data}),
+      contentType: "application/json; charset=utf-8",
+      success: function(data) { console.log('Success:', data); modal.style.display = "none"; $('#dash_page').html(data);},
+      error: function(exception){console.log('Exeption:', exception);}
+  });
+    e.preventDefault();
+  });
+
+  // Sorting Data table (Based on 1st column):
+  function sortTable() {
+    var table, rows, switching, i, x, y, shouldSwitch;
+    table = document.getElementById("data_pivot");
+    switching = true;
+    while (switching) {
+      switching = false;
+      rows = table.rows;
+      for (i = 1; i < (rows.length - 1); i++) {
+        shouldSwitch = false;
+        x = rows[i].getElementsByTagName("td")[0];
+        y = rows[i + 1].getElementsByTagName("td")[0];
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+      if (shouldSwitch) {
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+      }
+    }
+  }
+
+</script>
+
+
+{% endblock %}
